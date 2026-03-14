@@ -2,10 +2,10 @@
 clear
 if [ -f core/banner.sh ]; then bash core/banner.sh; fi
 GOLD='\033[38;5;214m'; BOLD='\033[1m'; RESET='\033[0m'; WHITE='\033[1;37m'; RED='\033[1;31m'
-P="      "
+P="      " 
 
 echo -e "${P}${GOLD}╔══════════════════════════════════════════════════════════╗${RESET}"
-echo -e "${P}║ ${WHITE}         NEXUS-OMNI SYSTEM | ${GOLD}GLOBAL ACCESS  ${P}${WHITE}║"
+echo -e "${P}║ ${WHITE}         NEXUS-OMNI SYSTEM | ${GOLD}GLOBAL ACCESS MODE        ${P}${WHITE}║"
 echo -e "${P}${GOLD}╠══════════════════════════════════════════════════════════╣${RESET}"
 echo -e "${P}║ ${GOLD}[01]${WHITE} WEB-SHIELD (DDoS)      ${GOLD}[11]${WHITE} CPU ARCHITECTURE      ${P}║"
 echo -e "${P}║ ${GOLD}[02]${WHITE} NEXUS-AUTH (KEYGEN)    ${GOLD}[12]${WHITE} RAM USAGE INFO        ${P}║"
@@ -44,6 +44,6 @@ case $opt in
     21) bash core/cyber_monitor.sh ;;
     22) bash core/proxy_gate.sh ;;
     20) exit ;;
-    *) echo -e "${RED}[!] Modul $opt Error!${RESET}"; sleep 1 ;;
+    *) echo -e "${RED}[!] Error!${RESET}"; sleep 1 ;;
 esac
 bash core/scripts/menu.sh
