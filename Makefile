@@ -1,4 +1,5 @@
 run:
-@bash core/scripts/menu.sh
+	@bash core/scripts/menu.sh
+
 install:
-@bash install.sh
+	@bash install.sh
