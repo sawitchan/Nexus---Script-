@@ -1,21 +1,24 @@
 #!/bin/bash
 clear
-if [ -f core/banner.sh ]; then bash core/banner.sh; fi
-C='\033[1;36m'; W='\033[1;37m'; Y='\033[1;33m'; G='\033[1;32m'; R='\033[1;31m'
 
-echo -e "$W  NEXUS-OMNI (20 MODULES ACTIVE)"
-echo -e "$C [01] WEB-SHIELD PROTECTOR    [11] CPU ARCHITECTURE"
-echo -e " [02] NEXUS-AUTH (KEYGEN)      [12] RAM USAGE INFO"
-echo -e " [03] ANTI-SNIFF MONITOR       [13] STORAGE ANALYZER"
-echo -e " [04] BRUTE-FORCE DETECTOR     [14] RUNNING PROCESS"
-echo -e " [05] IP GEOLOCATION TRACKER   [15] CHECK MY PUBLIC IP"
-echo -e " [06] NEXUS-OCR (AI SCAN)       [16] ARP NETWORK SCAN"
-echo -e " [07] WIFI DEVICE DISCOVERY    [17] PORT SCAN LOCAL"
-echo -e " [08] OS SYSTEM INFORMATION    [18] PING GOOGLE TEST"
-echo -e " [09] TERMUX STORAGE SETUP     [19] CLEAN CACHE TEMP"
-echo -e " [20] EXIT SYSTEM"
-echo -e " [21] TECH-WORLD MONITOR (REAL-TIME)"
-echo -e "$C ══════════════════════════════════════════════════════════════"
+if [ -f core/banner.sh ]; then bash core/banner.sh; fi
+
+GOLD='\033[38;5;214m'; BOLD='\033[1m'; RESET='\033[0m'; BLUE='\033[1;34m'; WHITE='\033[1;37m'; RED='\033[1;31m'
+
+echo -e "${GOLD}${BOLD} ══════════════════════════════════════════════════════════════${RESET}"
+echo -e " ${WHITE}NEXUS-OMNI SYSTEM | ${GOLD} DASHBOARD ${RESET}"
+echo -e "${GOLD}${BOLD} ══════════════════════════════════════════════════════════════${RESET}"
+echo -e " ${GOLD}[01]${WHITE} WEB-SHIELD PROTECTOR    ${GOLD}[11]${WHITE} CPU ARCHITECTURE"
+echo -e " ${GOLD}[02]${WHITE} NEXUS-AUTH (KEYGEN)      ${GOLD}[12]${WHITE} RAM USAGE INFO"
+echo -e " ${GOLD}[03]${WHITE} ANTI-SNIFF MONITOR       ${GOLD}[13]${WHITE} STORAGE ANALYZER"
+echo -e " ${GOLD}[04]${WHITE} BRUTE-FORCE DETECTOR     ${GOLD}[14]${WHITE} RUNNING PROCESS"
+echo -e " ${GOLD}[05]${WHITE} IP GEOLOCATION TRACKER   ${GOLD}[15]${WHITE} CHECK MY PUBLIC IP"
+echo -e " ${GOLD}[06]${WHITE} NEXUS-OCR (AI SCAN)       ${GOLD}[16]${WHITE} ARP NETWORK SCAN"
+echo -e " ${GOLD}[07]${WHITE} WIFI DEVICE DISCOVERY    ${GOLD}[17]${WHITE} PORT SCAN LOCAL"
+echo -e " ${GOLD}[08]${WHITE} OS SYSTEM INFORMATION    ${GOLD}[18]${WHITE} PING GOOGLE TEST"
+echo -e " ${GOLD}[09]${WHITE} TERMUX STORAGE SETUP     ${GOLD}[19]${WHITE} CLEAN CACHE TEMP"
+echo -e " ${GOLD}[20]${WHITE} EXIT SYSTEM              ${GOLD}[21]${WHITE} GLOBAL CYBER MONITOR"
+echo -e "${GOLD}${BOLD} ══════════════════════════════════════════════════════════════${RESET}"
 read -p " NEXUS-OMNI >> " opt
 
 case $opt in
@@ -31,10 +34,12 @@ case $opt in
     13) df -h; read -p "Enter..." ;;
     14) ps aux | head -n 15; read -p "Enter..." ;;
     15) curl -s ifconfig.me; echo ""; read -p "Enter..." ;;
-    18) ping -c 4 google.com; read -p "Enter..." ;;
-    19) echo -e "$Y[*] Cleaning..."; pkg clean && rm -rf ~/.cache/*; echo -e "$G[+] Done!"; sleep 1 ;;
+    16) bash core/arp_scan.sh ;;
+    17) bash core/port_scan.sh ;;
+    18) bash core/ping_test.sh ;;
+    19) pkg clean && rm -rf ~/.cache/*; echo -e "${GOLD}[+] Cache Cleaned!${RESET}"; sleep 1 ;;
     21) bash core/cyber_monitor.sh ;;
     20) exit ;;
-    *) echo -e "$R[!] Modul $opt Belum Terhubung atau Masih Pengembangan"; sleep 1 ;;
+    *) echo -e "${RED}[!] Modul $opt Sedang Dalam Sinkronisasi Logic...${RESET}"; sleep 1 ;;
 esac
 bash core/scripts/menu.sh
