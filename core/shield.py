@@ -1,1 +1,1 @@
-import os\nprint('\033[1;31m[!] SCANNING NETWORK TRAFFIC...\033[0m')\nos.system('netstat -tupln')
+import os\nprint('\033[1;31m[!] SHIELD ACTIVE: MONITORING LIVE CONNECTIONS...\033[0m')\nos.system('netstat -tnup | grep ESTABLISHED')

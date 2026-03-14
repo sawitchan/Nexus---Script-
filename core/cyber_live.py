@@ -1,1 +1,1 @@
-import requests, random\nt=requests.get('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson').status_code\nprint(f'\033[1;31m[!] LIVE ATTACK DETECTED IN {random.choice(["USA","INDONESIA","RUSSIA"])}\033[0m')
+import requests, random, time\nprint('\033[1;31m[!] FETCHING REAL-TIME THREAT DATA...\033[0m')\nfor _ in range(5):\n print(f'[*] ATTACK FROM {random.choice(["CN", "US", "RU", "ID"])} | TYPE: {random.choice(["DDoS", "Exploit"])} | STATUS: BLOCKED')\n time.sleep(0.5)

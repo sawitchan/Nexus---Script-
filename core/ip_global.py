@@ -1,1 +1,1 @@
-import requests\nprint(requests.get('https://ifconfig.me/all.json').json())
+import requests\nprint('\033[1;34m[*] YOUR GLOBAL PUBLIC IP:\033[0m')\nprint(requests.get('https://api.ipify.org?format=json').json()['ip'])

@@ -1,1 +1,1 @@
-import platform, os\nprint(f'Kernel: {platform.release()}\nArch: {platform.machine()}')
+import os, platform\nprint(f'Device: {platform.machine()}\nKernel: {platform.release()}\nUptime: ')\nos.system('uptime')

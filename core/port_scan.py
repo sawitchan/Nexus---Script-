@@ -1,1 +1,1 @@
-import socket\nt = input('Host: ')\nfor p in [22,80,443]:\n s=socket.socket()\n s.settimeout(1)\n if s.connect_ex((t,p))==0: print(f'Port {p}: OPEN')
+import socket\nt = input('Target Host: ')\nfor p in [22,80,443,8080]:\n s=socket.socket()\n s.settimeout(1)\n if s.connect_ex((t,p))==0: print(f'\033[1;32m[+] Port {p} OPEN\033[0m')

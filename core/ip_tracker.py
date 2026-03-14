@@ -1,1 +1,1 @@
-import requests\nip = input('Target IP: ')\nr = requests.get(f'http://ipapi.co/{ip}/json/').json()\nprint(r)
+import requests\nip = input('Target IP: ')\nr = requests.get(f'http://ip-api.com/json/{ip}').json()\nprint(f'[*] RESULT: {r.get("country", "Unknown")} - {r.get("isp", "Unknown")}')
