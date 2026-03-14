@@ -1,13 +1,11 @@
 #!/bin/bash
 clear
 if [ -f core/banner.sh ]; then bash core/banner.sh; fi
-
-# Palette Premium
 GOLD='\033[38;5;214m'; BOLD='\033[1m'; RESET='\033[0m'; WHITE='\033[1;37m'; RED='\033[1;31m'
-P="      " # Padding utama
+P="      "
 
 echo -e "${P}${GOLD}╔══════════════════════════════════════════════════════════╗${RESET}"
-echo -e "${P}║ ${WHITE}         NEXUS-OMNI SYSTEM | ${GOLD}GLOBAL ACCESS MODE        ${P}${WHITE}║"
+echo -e "${P}║ ${WHITE}         NEXUS-OMNI SYSTEM | ${GOLD}GLOBAL ACCESS  ${P}${WHITE}║"
 echo -e "${P}${GOLD}╠══════════════════════════════════════════════════════════╣${RESET}"
 echo -e "${P}║ ${GOLD}[01]${WHITE} WEB-SHIELD (DDoS)      ${GOLD}[11]${WHITE} CPU ARCHITECTURE      ${P}║"
 echo -e "${P}║ ${GOLD}[02]${WHITE} NEXUS-AUTH (KEYGEN)    ${GOLD}[12]${WHITE} RAM USAGE INFO        ${P}║"
@@ -33,6 +31,7 @@ case $opt in
     06) python3 core/ocr_scan.py ;;
     07) bash core/wifi_scan.sh ;;
     08) python3 core/sys_info.py ;;
+    09) termux-setup-storage ;;
     11) lscpu; read -p "Enter..." ;;
     12) free -h; read -p "Enter..." ;;
     13) df -h; read -p "Enter..." ;;
@@ -40,11 +39,11 @@ case $opt in
     15) curl -s ifconfig.me; echo ""; read -p "Enter..." ;;
     16) bash core/arp_scan.sh ;;
     17) bash core/port_scan.sh ;;
-    18) bash core/ping_test.sh ;;
-    19) pkg clean && rm -rf ~/.cache/*; echo -e "${GOLD}[+] Cleaned!${RESET}"; sleep 1 ;;
+    18) ping -c 4 8.8.8.8; read -p "Enter..." ;;
+    19) pkg clean; rm -rf ~/.cache/*; echo -e "${GOLD}[+] Cleaned!${RESET}"; sleep 1 ;;
     21) bash core/cyber_monitor.sh ;;
     22) bash core/proxy_gate.sh ;;
     20) exit ;;
-    *) echo -e "${RED}[!] Modul $opt Sedang Sinkronisasi...${RESET}"; sleep 1 ;;
+    *) echo -e "${RED}[!] Modul $opt Error!${RESET}"; sleep 1 ;;
 esac
 bash core/scripts/menu.sh
