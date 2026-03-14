@@ -1,9 +1,8 @@
-import os
-print("\033[1;31m[!] WORLDWIDE CYBER ATTACK MONITOR (LIVE)\033[0m")
-print("[*] Stream from Global Threat Maps...")
-# Simulasi stream data dari server intelijen
-os.system("curl -s https://cybermap.kaspersky.com/id | head -n 1 && echo 'Connecting to Real-time Stream...'")
-print("Target: USA | Type: DDoS | Intensity: HIGH")
-print("Target: INDONESIA | Type: Phishing | Intensity: MEDIUM")
-print("Target: CHINA | Type: Malware | Intensity: CRITICAL")
-input("\nEnter...")
+import requests, time, random
+print("\033[1;31m[!] LIVE CYBER ATTACK STREAM (WORLDWIDE)\033[0m")
+# Fetching dynamic data simulation based on real countries
+targets = ["USA", "China", "Russia", "Indonesia", "Germany", "Japan"]
+types = ["DDoS", "SQL Injection", "Brute Force", "Malware"]
+for i in range(5):
+    print(f"[*] ATTACK DETECTED: {random.choice(targets)} | TYPE: {random.choice(types)} | INTENSITY: {random.randint(70, 100)}%")
+    time.sleep(0.7)

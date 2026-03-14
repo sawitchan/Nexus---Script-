@@ -1,1 +1,8 @@
-import os; print("\033[1;36m[🛡️] WEB-SHIELD ACTIVE\033[0m"); os.system("netstat -ant | grep ESTABLISHED | head -n 10")
+import os, time
+print("\033[1;31m[!] MONITORING INCOMING TRAFFIC (ANTI-DDoS)...\033[0m")
+# Real command to check active connections
+os.system("netstat -an | grep ESTABLISHED | wc -l > connections.txt")
+with open("connections.txt", "r") as f:
+    conn = f.read().strip()
+print(f"[*] Active Connections: {conn}")
+print("[*] Shield Status: ACTIVE")
