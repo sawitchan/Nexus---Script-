@@ -1,3 +1,1 @@
-print('[🔥] DETECTING ATTACKS...')
-import os
-os.system('who')
+print('\033[1;31m[!] BRUTE-FORCE DETECTION ACTIVE\033[0m')\nimport os\nos.system('last -n 5')

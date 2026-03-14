@@ -1,3 +1,1 @@
-echo -e '[1;33m[*] ARP Scanning...[0m'
-nmap -sn 192.168.1.0/24
-read -p 'Enter...'
+echo -e '\033[1;35m[*] ARP SCANNING LOCAL NETWORK...\033[0m'\narp -a

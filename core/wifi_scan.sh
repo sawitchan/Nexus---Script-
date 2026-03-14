@@ -1,0 +1,1 @@
+echo -e '\033[1;33m[*] SCANNING NEARBY WIFI (REMON)...\033[0m'\nnmap --version || pkg install nmap -y\nnmap -sn 192.168.1.0/24
