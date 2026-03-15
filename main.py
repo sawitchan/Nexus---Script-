@@ -1,5 +1,4 @@
 import os, sys, time, random, requests, socket
-
 TOKEN = "8268861412:AAHo2cUeZOJx9G0H3xDegw9Cy27-3Vi3IZ0"
 ADMIN_ID = "8358311702"
 PROXY_FILE = "proxyscrape_premium_http_proxies.txt"
@@ -23,9 +22,10 @@ def draw_header():
     clear()
     print("\033[1;33m" + "╔══════════════════════════════════════════════════════╗")
     print("║                NEXUS-OMNI DASHBOARD                  ║")
-    print("║           V12.0 - SIMI UI           ║")
+    print("║                 V12.0 - SiMI UI  ARTIFICIAL     
+║")
     print("╚══════════════════════════════════════════════════════╝" + "\033[0m")
-    print("\033[1;32m" + "[ STATUS: ONLINE | REAL-TIME ACTIVE ]".center(54) + "\033[0m")
+    print("\033[1;32m" + "[ STATUS: ONLINE | SERVER ACTIVE ]".center(54) + "\033[0m")
     print("─"*54)
 
 def draw_menu():
@@ -74,12 +74,12 @@ def run_reality(choice):
                 print("\033[1;32m[+] TERDETEKSI TERBUKA: Port 80\033[0m")
             s.close()
         
-        msg = f"**NEXUS REPORT**\nModul: {choice}\nTarget: {target}\nMode: {mode}\nStatus: Success"
+        msg = f"❗**NEXUS REPORT**\nModul: {choice}\nTarget: {target}\nMode: {mode}\nStatus: Success"
         send_tele(msg)
-        print("\033[1;32m\n[+] Report berhasil dikirim ke Telegram Tuan Nexus.\033[0m")
+        print("\033[1;32m\n[+] Report berhasil dikirim ke Telegram Tuan Markus.\033[0m")
         
     except: 
-        print("\033[1;31m[!] Gagal Terhubung ke DNS.\033[0m")
+        print("\033[1;31m[!] Gagal Terhubung ke Dns.\033[0m")
     
     input("\nKlik Enter untuk kembali...")
 
