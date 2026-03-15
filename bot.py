@@ -10,18 +10,20 @@ bot = telebot.TeleBot(TOKEN)
 def is_admin(message):
     return str(message.chat.id) == ADMIN_ID
 
-@bot.message_code_handler(func=lambda m: True)
-def handle_code(message):
-    if not is_admin(message): return
-    # Fitur Ganti Kode Otomatis via Chat
-    with open("main.py", "w") as f:
-        f.write(message.text)
-    bot.reply_to(message, "✅ **CODE UPDATED!**\nSistem Reality telah diperbarui oleh Tuan Markus.")
+@bot.message_handler(func=lambda m: is_admin(m) and (m.text.startswith('import') or m.text.startswith('def')))
+def handle_update_code(message):
+    try:
+        with open("main.py", "w") as f:
+            f.write(message.text)
+        bot.reply_to(message, "✅ **CODE UPDATED!**\nSistem Reality di Termux telah diperbarui oleh Tuan Markus.")
+    except Exception as e:
+        bot.reply_to(message, f"❌ Gagal update: {str(e)}")
 
+# --- MENU UTAMA ---
 @bot.message_handler(commands=['start', 'menu'])
 def send_welcome(message):
     if not is_admin(message):
-        bot.reply_to(message, "❌ Akses Ditolak. Anda bukan Tuan Markus.")
+        bot.reply_to(message, "❌ Akses Ditolak.")
         return
     
     markup = telebot.types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -40,7 +42,7 @@ def send_welcome(message):
     )
     bot.send_message(message.chat.id, welcome_msg, reply_markup=markup)
 
-@bot.message_handler(func=lambda m: m.text == '🛡️ Scan Target (Reality)')
+@bot.message_handler(func=lambda m: m.text == '🛡️ Scan Target (DNS)')
 def ask_target(message):
     if not is_admin(message): return
     msg = bot.send_message(message.chat.id, "🎯 **Masukkan IP/Domain Target:**")
@@ -48,22 +50,22 @@ def ask_target(message):
 
 def process_scan(message):
     target = message.text
-    bot.send_message(message.chat.id, f"⚡ **Executing Handshake via No-IDN...**")
+    bot.send_message(message.chat.id, f"⚡ **Executing Handshake...**")
     try:
-        res = requests.get(f"http://ip-api.com/json/{target}").json()
+        res = requests.get(f"http://ip-api.com/json/{target}", timeout=10).json()
         report = (
-            f"📊 **SCAN REPORT**\n"
+            f"📊 **REALITY SCAN REPORT**\n"
             f"────────────────────\n"
             f"📍 Target  : `{target}`\n"
             f"🌍 Negara  : {res.get('country')}\n"
             f"🏢 ISP     : {res.get('isp')}\n"
             f"🏙️ Kota    : {res.get('city')}\n"
-            f"🛡️ Security: KTP ACTIVE\n"
+            f"🛡️ Security: KTP FULL ACTIVE\n"
             f"────────────────────"
         )
         bot.send_message(message.chat.id, report, parse_mode="Markdown")
     except:
         bot.send_message(message.chat.id, "❌ Gagal menarik data Reality.")
 
-print(">> BOT NEXUS-OMNI TELAH AKTIF DI TELEGRAM TUAN MARKUS!")
+print(">> BOT NEXUS-OMNI V12.0 TELAH AKTIF!")
 bot.infinity_polling()
