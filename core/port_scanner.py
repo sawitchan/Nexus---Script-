@@ -1,25 +1,28 @@
 import socket
-from datetime import datetime
+import concurrent.futures
 
-target = input("\033[1;34m[?] Masukkan Host/IP Target: \033[0m")
-print("-" * 50)
-print(f"Scanning Target: {target}")
-print(f"Scanning started at: {str(datetime.now())}")
-print("-" * 50)
+print("\033[1;31m" + "="*45)
+print("     NEXUS-OMNI AUTO-DETECT SCANNER")
+print("     [ MODE: SCAN PINTU 1-1024 ]")
+print("="*45 + "\033[0m")
 
-ports = [21, 22, 80, 443, 3306, 8080] # Port standar yang sering dicek hacker
+target = input("[?] Masukkan Target (IP/Domain): ").strip().replace("https://", "").replace("http://", "").split('/')[0]
 
-try:
-    for port in ports:
+print(f"[*] Mengetok semua pintu di {target}...")
+
+def scan_pintu(port):
+    try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        socket.setdefaulttimeout(1)
-        result = s.connect_ex((target, port))
-        if result == 0:
-            print(f"\033[1;32m[+] Port {port} is OPEN\033[0m")
-        else:
-            print(f"\033[1;31m[-] Port {port} is CLOSED\033[0m")
+        s.settimeout(0.5)
+        if s.connect_ex((target, port)) == 0:
+            print(f"\033[1;32m[+] PINTU TERDETEKSI TERBUKA: {port}\033[0m")
         s.close()
-except:
-    print("\n\033[1;31m[!] Error: Gagal koneksi ke target.\033[0m")
+    except:
+        pass
 
-print("-" * 50)
+# Kita suruh 100 pekerja buat ngetok pintu 1 sampai 1024 sekaligus!
+with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+    executor.map(scan_pintu, range(1, 1025))
+
+print("-" * 45)
+print("[*] Selesai! Semua pintu sudah diperiksa.")
