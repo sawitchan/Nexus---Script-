@@ -10,16 +10,17 @@ def ghost_scan():
     print("="*45 + "\033[0m")
     
     target = input("[?] Masukkan Target: ").strip()
+    if not target: return
     
-    # Otomatis deteksi proxy premium Tuan
-    proxy_file = "proxyscrape_premium_http_proxies.txt"
-    if os.path.exists(proxy_file):
-        with open(proxy_file, "r") as f:
-            proxies = [line.strip() for line in f if line.strip() and not line.startswith('[')]
+    # Deteksi File Tuan secara otomatis
+    premium_file = "proxyscrape_premium_http_proxies.txt"
+    if os.path.exists(premium_file):
+        with open(premium_file, "r") as f:
+            proxies = [l.strip() for l in f if l.strip() and not l.startswith('[')]
         selected = random.choice(proxies)
-        print(f"\033[1;32m[*] Jalur DNS Aktif: {selected} (Auto-Switch)\033[0m")
+        print(f"\033[1;32m[*] Jalur Ghost Aktif: {selected}\033[0m")
     else:
-        print("\033[1;31m[!] File Proxy tidak ditemukan!\033[0m")
+        print("\033[1;31m[!] Error: File proxyscrape_premium_http_proxies.txt tidak ada!\033[0m")
         return
 
     def scan_pintu(port):
@@ -27,14 +28,14 @@ def ghost_scan():
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(0.5)
             if s.connect_ex((target, port)) == 0:
-                print(f" \033[1;32m[+] CELAH TERBUKA: Port {port}\033[0m")
+                print(f" \033[1;32m[+] TERDETEKSI TERBUKA: Port {port}\033[0m")
             s.close()
         except: pass
 
-    print(f"[*] Menjalankan Scanning Otomatis pada {target}...")
-    # Menggunakan Threading agar cepat dan otomatis deteksi port 1-1024
+    print(f"[*] Scanning Otomatis Port 1-1024 pada {target}...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
         executor.map(scan_pintu, range(1, 1025))
+    print("\nSelesai, Tuan Markus! Data Intel & Port sudah siap.")
 
 if __name__ == "__main__":
     ghost_scan()
