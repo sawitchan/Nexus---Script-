@@ -16,6 +16,7 @@ case $choice in
     27) python3 core/telegram_alert.py ;;
     28) python3 core/auto_clean.py ;;
     29) python3 core/port_scanner.py ;;
+    30) python3 core/dns_lookup.py ;;
     *) echo -e "\n\033[1;31mModul tidak ditemukan...\033[0m" ;;
 esac
 
