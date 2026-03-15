@@ -2,6 +2,7 @@ import telebot
 import os
 import subprocess
 import psutil
+import time
 from telebot import types
 
 TOKEN = "8268861412:AAHo2cUeZOJx9G0H3xDegw9Cy27-3Vi3IZ0"
@@ -11,10 +12,10 @@ bot = telebot.TeleBot(TOKEN)
 MAIN_PATH = os.path.join(os.getcwd(), "main.py")
 
 IMG = {
-    "main": "https://pomf2.lain.la/f/v0m3z3z.jpg",
-    "sec": "https://pomf2.lain.la/f/y2m5y6b.jpg",
-    "intel": "https://pomf2.lain.la/f/p7m8p9z.jpg",
-    "exploit": "https://pomf2.lain.la/f/k1m2k3y.jpg"
+    "main": "https://c.termai.cc/i101/NoQ.jpg",
+    "sec": "https://c.termai.cc/i106/C8SCWk3.jpg",
+    "intel": "https://c.termai.cc/i113/G3u.jpg",
+    "exploit": "https://c.termai.cc/i197/UCCvsQM.jpg"
 }
 
 def is_admin(m):
@@ -35,7 +36,7 @@ def send_welcome(message):
         btns.append(types.InlineKeyboardButton("👨‍💻 Developer Hub", callback_data="cat_dev"))
     markup.add(*btns)
     
-    caption = "🚀 **NEXUS-OMNI Dashboard V13.0**\n50 fitur siap eksekusi , Tuan."
+    caption = "🚀 **NEXUS-OMNI Dashboard V13.0**\n50 fitur siap eksekusi, Tuan."
     bot.send_photo(message.chat.id, IMG["main"], caption=caption, reply_markup=markup, parse_mode="Markdown")
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -63,19 +64,24 @@ def callback_inline(call):
         bot.edit_message_media(media=types.InputMediaPhoto(media=IMG["intel"], caption="🕵️ **INTEL SUITE**"),
                                chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=markup)
 
+    elif call.data == "cat_system":
+        cpu = psutil.cpu_percent()
+        ram = psutil.virtual_memory().percent
+        msg = f"⚙️ **SYSTEM MONITOR**\n──────────────────\n🖥️ CPU: {cpu}%\n🧠 RAM: {ram}%\n──────────────────"
+        markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⬅️ Kembali", callback_data="back_main"))
+        bot.edit_message_caption(msg, call.message.chat.id, call.message.message_id, reply_markup=markup)
+
     elif call.data == "cat_dev":
         if not is_admin(call): return
         markup = types.InlineKeyboardMarkup(row_width=1)
-        markup.add(types.InlineKeyboardButton("📝 Update main.py (Chat)", callback_data="dev_update"),
-                   types.InlineKeyboardButton("🚀 Git Add, Commit, Push", callback_data="dev_push"),
-                   types.InlineKeyboardButton("🗑️ Hapus main.py", callback_data="dev_del"),
+        markup.add(types.InlineKeyboardButton("🚀 Git Add, Commit, Push", callback_data="dev_push"),
                    types.InlineKeyboardButton("⬅️ Kembali", callback_data="back_main"))
-        bot.edit_message_caption("👨‍💻 **DEVELOPER HUB**\nRemote Termux Tanpa Buka Aplikasi.", 
-                                 call.message.chat.id, call.message.message_id, reply_markup=markup)
+        bot.edit_message_caption("👨‍💻 **DEVELOPER HUB**", call.message.chat.id, call.message.message_id, reply_markup=markup)
 
     elif call.data == "dev_push":
+        bot.send_message(call.message.chat.id, "🛰️ Memulai push...")
         res = subprocess.getoutput("git add . && git commit -m 'Remote Update via Telegram' && git push origin main")
-        bot.send_message(call.message.chat.id, f"✅ **GIT SUCCESS:**\n`{res}`")
+        bot.send_message(call.message.chat.id, f"✅ **GIT RESULT:**\n`{res}`")
 
     elif call.data == "back_main":
         bot.delete_message(call.message.chat.id, call.message.message_id)
@@ -87,9 +93,16 @@ def callback_inline(call):
 
 def execute_script(message, mod_id):
     target = message.text
-    bot.send_message(message.chat.id, f"🚀 **Running {mod_id} on {target}...**")
+    bot.send_message(message.chat.id, f"🚀 **Running {mod_id}...**")
     cmd = f"python3 {MAIN_PATH} --mod {mod_id} --target {target}"
     result = subprocess.getoutput(cmd)
     bot.send_message(message.chat.id, f"✅ **RESULT:**\n`{result}`", parse_mode="Markdown")
 
-bot.infinity_polling()
+# Agar bot tidak gampang crash jika ada gangguan koneksi
+while True:
+    try:
+        print(">> NEXUS-OMNI V13.0 ACTIVE!")
+        bot.polling(non_stop=True, interval=0, timeout=20)
+    except Exception as e:
+        print(f"Error: {e}")
+        time.sleep(5)
