@@ -1,16 +1,33 @@
-import socket
+import sys
+import os
+import requests
+import random
 
-print("\033[1;36m" + "="*40)
-print("      NEXUS-OMNI DNS LOOKUP")
-print("="*40 + "\033[0m")
+def auto_dns():
+    print("\033[1;36m" + "="*45)
+    print("     NEXUS-OMNI DNS")
+    print("="*45 + "\033[0m")
+    
+    domain = input("[?] Masukkan Domain Target: ").strip()
+    proxy_file = "proxyscrape_premium_http_proxies.txt"
+    
+    if os.path.exists(proxy_file):
+        with open(proxy_file, "r") as f:
+            proxies_list = [l.strip() for l in f if l.strip() and not l.startswith('[')]
+        selected = random.choice(proxies_list)
+        proxies = {"http": f"http://{selected}", "https": f"http://{selected}"}
+        print(f"\033[1;33m[*] Menggunakan Jalur Anonim: {selected}\033[0m")
+    else: return
 
-domain = input("[?] Masukkan Domain (ex: google.com): ")
+    try:
+        url = f"https://cloudflare-dns.com/query?name={domain}&type=A"
+        # Request otomatis lewat jalur Ghost
+        res = requests.get(url, proxies=proxies, timeout=10).json()
+        print(f"\n\033[1;32m[+] Intelijen DNS Berhasil Ditarik:\033[0m")
+        for record in res.get("Answer", []):
+            print(f" -> Result: {record['data']}")
+    except:
+        print("\033[1;31m[!] Jalur terdeteksi! Mengalihkan ke Proxy lain...\033[0m")
 
-try:
-    ip_addr = socket.gethostbyname(domain)
-    print(f"\033[1;32m[+] Domain: {domain}")
-    print(f"[+] IP Address: {ip_addr}\033[0m")
-except socket.gaierror:
-    print("\033[1;31m[!] Error: Domain tidak valid.\033[0m")
-
-print("\033[1;36m" + "="*40 + "\033[0m")
+if __name__ == "__main__":
+    auto_dns()
