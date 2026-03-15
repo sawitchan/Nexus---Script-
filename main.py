@@ -1,4 +1,5 @@
 import os, sys, time, random, requests, socket
+
 TOKEN = "8268861412:AAHo2cUeZOJx9G0H3xDegw9Cy27-3Vi3IZ0"
 ADMIN_ID = "8358311702"
 PROXY_FILE = "proxyscrape_premium_http_proxies.txt"
@@ -16,14 +17,13 @@ def get_ghost():
         with open(PROXY_FILE, 'r') as f:
             proxies = f.read().splitlines()
         return random.choice(proxies)
-    except: return "Global-Ghost-Link"
+    except: return "Global-Ghost-Path"
 
 def draw_header():
     clear()
     print("\033[1;33m" + "╔══════════════════════════════════════════════════════╗")
     print("║                NEXUS-OMNI DASHBOARD                  ║")
-    print("║                 V12.0 - SiMI UI  ARTIFICIAL     
-║")
+    print("║              V12.0 - SIMI UI ARTIFICIAL              ║")
     print("╚══════════════════════════════════════════════════════╝" + "\033[0m")
     print("\033[1;32m" + "[ STATUS: ONLINE | SERVER ACTIVE ]".center(54) + "\033[0m")
     print("─"*54)
@@ -58,7 +58,7 @@ def run_reality(choice):
     target = input("\n[?] Masukkan Target (IP/Domain): ").strip()
     if not target: return
 
-    print(f"\n[*] Mengambil Data via {ghost}...")
+    print(f"\n[*] Mengambil Data Reality via {ghost}...")
     time.sleep(1)
 
     try:
@@ -69,17 +69,17 @@ def run_reality(choice):
             print(f"[ID] Kota   : {res.get('city')}\n[ID] Lat/Lon: {res.get('lat')}, {res.get('lon')}\033[0m")
             print("\n[*] Mencari Port Terbuka (Deep Scan)...")
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.settimeout(1)
+            s.settimeout(1.5)
             if s.connect_ex((target, 80)) == 0: 
                 print("\033[1;32m[+] TERDETEKSI TERBUKA: Port 80\033[0m")
             s.close()
         
-        msg = f"❗**NEXUS REPORT**\nModul: {choice}\nTarget: {target}\nMode: {mode}\nStatus: Success"
+        msg = f"❗ **NEXUS REPORT**\nModul: {choice}\nTarget: {target}\nMode: {mode}\nStatus: Success"
         send_tele(msg)
         print("\033[1;32m\n[+] Report berhasil dikirim ke Telegram Tuan Markus.\033[0m")
         
-    except: 
-        print("\033[1;31m[!] Gagal Terhubung ke Dns.\033[0m")
+    except Exception as e: 
+        print(f"\033[1;31m[!] Error: {str(e)}\033[0m")
     
     input("\nKlik Enter untuk kembali...")
 
