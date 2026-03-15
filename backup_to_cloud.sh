@@ -1,13 +1,12 @@
 #!/bin/bash
-# NEXUS-OMNI AUTO-BACKUP SYSTEM
-
 while true
 do
-    echo "[$(date)] Memulai Auto-Backup ke GitHub..."
     git add .
-    git commit -m "Auto-Backup: $(date +'%Y-%m-%d %H:%M:%S') - Anti-Cache Protection"
+    git commit -m "V15.5 Final: Auto-Save Protection"
     git push origin main
     
-    echo "[+] Backup Selesai. Menunggu 1 jam untuk sesi berikutnya..."
+    # Notifikasi ke Tuan Markus
+    curl -s "https://api.telegram.org/bot8268861412:AAHo2cUeZOJx9G0H3xDegw9Cy27-3Vi3IZ0/sendMessage?chat_id=8358311702&text=🛡️ **LAPORAN TUAN:**%0ABackup Cloud Sukses! Data Aman. 🚀&parse_mode=Markdown"
+    
     sleep 3600
 done

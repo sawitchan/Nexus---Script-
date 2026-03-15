@@ -1,7 +1,6 @@
 import telebot
 import os
 import subprocess
-import psutil
 import time
 from telebot import types
 
@@ -9,87 +8,54 @@ TOKEN = "8268861412:AAHo2cUeZOJx9G0H3xDegw9Cy27-3Vi3IZ0"
 ADMIN_ID = "8358311702"
 bot = telebot.TeleBot(TOKEN)
 
-MAIN_PATH = os.path.join(os.getcwd(), "main.py")
-
-IMG = {
-    "main": "https://c.termai.cc/i101/NoQ.jpg",
-    "intel": "https://c.termai.cc/i113/G3u.jpg",
-    "dev": "https://c.termai.cc/i106/C8SCWk3.jpg"
+FEATURES = {
+    "network": ["01 DDoS Shield", "04 Web-Shield", "06 Proxy Scraper", "22 Proxy Gate", "40 Tor Node"],
+    "security": ["03 Anti-Sniff", "25 Health Check", "26 IDS Sniffer", "31 WiFi Cracker", "50 Final Defense"],
+    "intel": ["05 IP Tracker", "09 Port Scanner", "15 Global IP", "30 Domain Intel", "37 Subdom Finder"],
+    "exploit": ["16 SQL Injector", "18 Brute Force", "19 Payload Gen", "20 Backdoor", "34 Ftp Exploit"],
+    "system": ["07 MAC Changer", "08 System Info", "11 RAM Usage", "14 Log Cleaner", "47 Encrypter"]
 }
-
-def is_admin(m):
-    return str(m.from_user.id) == ADMIN_ID
 
 @bot.message_handler(commands=['start', 'menu'])
 def send_welcome(message):
     markup = types.InlineKeyboardMarkup(row_width=2)
-    btns = [
-        types.InlineKeyboardButton("🌐 Network", callback_data="cat_network"),
-        types.InlineKeyboardButton("🛡️ Security", callback_data="cat_security"),
-        types.InlineKeyboardButton("🕵️ Intelligence", callback_data="cat_intel"),
-        types.InlineKeyboardButton("🚀 Exploit", callback_data="cat_exploit"),
-        types.InlineKeyboardButton("⚙️ System", callback_data="cat_system"),
-        types.InlineKeyboardButton("👨‍💻 Dev Hub", callback_data="cat_dev")
-    ]
+    btns = [types.InlineKeyboardButton(k.upper(), callback_data=f"cat_{k}") for k in FEATURES.keys()]
     markup.add(*btns)
-    caption = "🚀 **NEXUS-OMNI DASHBOARD V15.0**\nStatus: Stealth Mode Active\nUser: Tuan"
-    bot.send_photo(message.chat.id, IMG["main"], caption=caption, reply_markup=markup, parse_mode="Markdown")
+    markup.add(types.InlineKeyboardButton("👨‍💻 DEV HUB", callback_data="cat_dev"))
+    bot.send_photo(message.chat.id, "https://c.termai.cc/i101/NoQ.jpg", 
+                  caption="🚀 **NEXUS-OMNI DASHBOARD V15.5**\nStatus: Online & Protected", reply_markup=markup, parse_mode="Markdown")
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
-    if call.data == "cat_system":
-        cpu = psutil.cpu_percent()
-        ram = psutil.virtual_memory().percent
-        msg = f"⚙️ **SYSTEM MONITOR**\nCPU Usage: {cpu}%\nRAM Usage: {ram}%\nLog Status: Wiped Clean"
-        markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("⬅️ Kembali", callback_data="back_main"))
-        bot.edit_message_caption(msg, call.message.chat.id, call.message.message_id, reply_markup=markup)
-
+    if call.data.startswith("cat_") and call.data != "cat_dev":
+        cat = call.data.split("_")[1]
+        list_f = "\n".join([f"• {f}" for f in FEATURES[cat]])
+        markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🔍 Run Modul", callback_data="run_mod"),
+                                                  types.InlineKeyboardButton("⬅️ Kembali", callback_data="back"))
+        bot.edit_message_caption(f"📂 **{cat.upper()} MODULES**\n\n{list_f}", call.message.chat.id, call.message.message_id, reply_markup=markup, parse_mode="Markdown")
+    
     elif call.data == "cat_dev":
-        if not is_admin(call): return
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        markup.add(types.InlineKeyboardButton("🔄 AUTO-UPDATE ENGINE", callback_data="dev_update"),
-                   types.InlineKeyboardButton("🚀 GIT PUSH (REMOTE)", callback_data="dev_push"),
-                   types.InlineKeyboardButton("⬅️ Kembali", callback_data="back_main"))
-        bot.edit_message_caption("👨‍💻 **DEVELOPER HUB**\nControl Termux dari jarak jauh.", call.message.chat.id, call.message.message_id, reply_markup=markup)
+        markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🔄 UPDATE ENGINE", callback_data="dev_upd"),
+                                                  types.InlineKeyboardButton("⬅️ Kembali", callback_data="back"))
+        bot.edit_message_caption("👨‍💻 **DEVELOPER HUB**\nAuto-Backup: ACTIVE 🛡️", call.message.chat.id, call.message.message_id, reply_markup=markup)
 
-    elif call.data == "dev_update":
-        bot.answer_callback_query(call.id, "🔄 Updating...")
+    elif call.data == "dev_upd":
         res = subprocess.getoutput("git pull origin main && pm2 restart Nexus-Bot")
-        bot.send_message(call.message.chat.id, f"✅ **UPDATE SUCCESS:**\n`{res}`")
+        bot.send_message(call.message.chat.id, f"✅ **Update:**\n`{res}`")
 
-    elif call.data == "dev_push":
-        bot.answer_callback_query(call.id, "🛰️ Pushing...")
-        res = subprocess.getoutput("git add . && git commit -m 'Remote Sync' && git push origin main")
-        bot.send_message(call.message.chat.id, f"✅ **GIT PUSH:**\n`{res}`")
+    elif call.data == "run_mod":
+        msg = bot.send_message(call.message.chat.id, "🎯 **Input: [Nomor] [Target]**")
+        bot.register_next_step_handler(msg, execute_remote)
 
-    elif call.data == "back_main":
+    elif call.data == "back":
         bot.delete_message(call.message.chat.id, call.message.message_id)
         send_welcome(call.message)
 
-    elif call.data.startswith("cat_"):
-        # Logika kategori fitur lainnya (Network, Intel, dll)
-        markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("🔍 Run Modul", callback_data="run_mod"),
-                                                  types.InlineKeyboardButton("⬅️ Kembali", callback_data="back_main"))
-        bot.edit_message_caption(f"📂 Kategori {call.data.split('_')[1].upper()} Ready.", call.message.chat.id, call.message.message_id, reply_markup=markup)
-
-    elif call.data == "run_mod":
-        msg = bot.send_message(call.message.chat.id, "🎯 **Masukkan Nomor Modul & Target:**\n(Contoh: 29 google.com)")
-        bot.register_next_step_handler(msg, execute_remote)
-
 def execute_remote(message):
     try:
-        data = message.text.split()
-        mod_id = data[0].zfill(2)
-        target = data[1]
-        bot.send_message(message.chat.id, f"⚡ **Executing Modul {mod_id} on {target}...**")
-        cmd = f"python3 {MAIN_PATH} --mod {mod_id} --target {target}"
-        result = subprocess.getoutput(cmd)
-        bot.send_message(message.chat.id, result, parse_mode="Markdown")
-    except:
-        bot.send_message(message.chat.id, "❌ Format salah. Gunakan: `[Nomor] [Target]`")
+        mod, tgt = message.text.split()
+        res = subprocess.getoutput(f"python3 main.py --mod {mod} --target {tgt}")
+        bot.send_message(message.chat.id, res, parse_mode="Markdown")
+    except: bot.send_message(message.chat.id, "❌ Error Format")
 
-while True:
-    try:
-        bot.polling(non_stop=True, interval=0, timeout=20)
-    except:
-        time.sleep(5)
+bot.polling(non_stop=True)
