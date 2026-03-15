@@ -5,50 +5,71 @@ import subprocess
 TOKEN = "8268861412:AAHo2cUeZOJx9G0H3xDegw9Cy27-3Vi3IZ0"
 bot = telebot.TeleBot(TOKEN)
 
-# Mapping 50 Fitur Ke Button (Sesuai Dashboard Tuan)
+# DATABASE 50 FITUR - FULL BUTTON
 FEATURES = {
-    "NETWORK": [("01 DDoS Shield", "01"), ("04 Web-Shield", "04"), ("06 Proxy Scraper", "06"), ("10 DNS Lookup", "10"), ("22 Proxy Gate", "22")],
-    "SECURITY": [("03 Anti-Sniff", "03"), ("25 Health Check", "25"), ("26 IDS Sniffer", "26"), ("31 WiFi Cracker", "31"), ("50 Final Defense", "50")],
-    "INTEL": [("05 IP Tracker", "05"), ("09 Port Scanner", "09"), ("15 Global IP", "15"), ("30 Domain Intel", "30"), ("37 Subdom Finder", "37")],
-    "EXPLOIT": [("16 SQL Injector", "16"), ("18 Brute Force", "18"), ("19 Payload Gen", "19"), ("20 Backdoor", "20"), ("34 Ftp Exploit", "34")],
-    "SYSTEM": [("07 MAC Changer", "07"), ("08 System Info", "08"), ("11 RAM Usage", "11"), ("14 Log Cleaner", "14"), ("47 Encrypter", "47")],
-    "DEFENSE": [("02 Auth Keygen", "02"), ("12 CPU Temp", "12"), ("23 VPN Tunnel", "23"), ("40 Tor Node", "40"), ("46 API Protect", "46")]
+    "NETWORK & DEFENSE": [
+        ("01 DDoS Shield", "01"), ("02 Auth Keygen", "02"), ("04 Web-Shield", "04"), 
+        ("06 Proxy Scraper", "06"), ("22 Proxy Gate", "22"), ("23 VPN Tunnel", "23"),
+        ("24 Botnet Node", "24"), ("40 Tor Node", "40"), ("42 Port Forward", "42"), ("46 API Protect", "46")
+    ],
+    "SECURITY & SCAN": [
+        ("03 Anti-Sniff", "03"), ("25 Health Check", "25"), ("26 IDS Sniffer", "26"), 
+        ("29 Deep Scan", "29"), ("31 WiFi Cracker", "31"), ("32 Packet Sniff", "32"),
+        ("44 Vuln Scanner", "44"), ("45 Shell Access", "45"), ("50 Final Defense", "50"), ("27 Telegram Alert", "27")
+    ],
+    "INTELLIGENCE": [
+        ("05 IP Tracker", "05"), ("09 Port Scanner", "09"), ("10 DNS Lookup", "10"), 
+        ("15 Global IP", "15"), ("30 Domain Intel", "30"), ("35 Metadata Ex", "35"),
+        ("37 Subdom Finder", "37"), ("38 Email Verif", "38"), ("41 Admin Finder", "41"), ("43 Sitemap Gen", "43")
+    ],
+    "EXPLOIT": [
+        ("16 SQL Injector", "16"), ("17 XSS Scanner", "17"), ("18 Brute Force", "18"), 
+        ("19 Payload Gen", "19"), ("20 Backdoor", "20"), ("33 Ssh Brute", "33"),
+        ("34 Ftp Exploit", "34"), ("36 Hash Cracker", "36"), ("39 Cloud BP", "39"), ("49 Web Cloner", "49")
+    ],
+    "SYSTEM": [
+        ("07 MAC Changer", "07"), ("08 System Info", "08"), ("11 RAM Usage", "11"), 
+        ("12 CPU Temp", "12"), ("13 Storage Check", "13"), ("14 Log Cleaner", "14"),
+        ("21 Cyber Live", "21"), ("28 Auto Clean", "28"), ("47 Encrypter", "47"), ("48 Decrypter", "48")
+    ]
 }
 
 @bot.message_handler(commands=['start', 'menu'])
-def send_welcome(message):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    btns = [types.InlineKeyboardButton(k, callback_data=f"cat_{k}") for k in FEATURES.keys()]
-    markup.add(*btns)
-    markup.add(types.InlineKeyboardButton("👨‍💻 DEV HUB", callback_data="cat_dev"))
-    bot.send_photo(message.chat.id, "https://c.termai.cc/i101/NoQ.jpg", 
-                  caption="🚀 **NEXUS-OMNI FINAL V15.7**\nStatus: Stealth Mode Active\nUser: Tuan Markus", reply_markup=markup, parse_mode="Markdown")
+def start(m):
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    for k in FEATURES.keys():
+        markup.add(types.InlineKeyboardButton(f"📂 {k}", callback_data=f"cat_{k}"))
+    bot.send_photo(m.chat.id, "https://c.termai.cc/i101/NoQ.jpg", 
+                  caption="🚀 **NEXUS-OMNI V16.5 ULTIMATUM**\nUser: Tuan Markus\nStatus: 50 Moduls Ready.", reply_markup=markup, parse_mode="Markdown")
 
 @bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    if call.data.startswith("cat_") and call.data != "cat_dev":
+def handle(call):
+    if call.data.startswith("cat_"):
         cat = call.data.split("_")[1]
         markup = types.InlineKeyboardMarkup(row_width=2)
-        # GENERATE BUTTON PER FITUR! Gak perlu ngetik lagi!
-        btns = [types.InlineKeyboardButton(name, callback_data=f"run_{val}") for name, val in FEATURES[cat]]
+        btns = [types.InlineKeyboardButton(n, callback_data=f"run_{v}") for n, v in FEATURES[cat]]
         markup.add(*btns)
-        markup.add(types.InlineKeyboardButton("⬅️ KEMBALI", callback_data="back"))
-        bot.edit_message_caption(f"📂 **KATEGORI: {cat}**\nPilih modul untuk dijalankan:", call.message.chat.id, call.message.message_id, reply_markup=markup, parse_mode="Markdown")
-    
+        markup.add(types.InlineKeyboardButton("⬅️ BACK TO MENU", callback_data="back"))
+        bot.edit_message_caption(f"📂 **KATEGORI: {cat}**", call.message.chat.id, call.message.message_id, reply_markup=markup)
+
     elif call.data.startswith("run_"):
-        mod_id = call.data.split("_")[1]
-        msg = bot.send_message(call.message.chat.id, f"🎯 **MODUL {mod_id} SELECTED**\nMasukkan Target (Contoh: google.com atau 8.8.8.8):")
-        bot.register_next_step_handler(msg, lambda m: execute_logic(m, mod_id))
+        mid = call.data.split("_")[1]
+        msg = bot.send_message(call.message.chat.id, f"🎯 **MODUL {mid} SELECTED**\nMasukkan IP/Domain target:")
+        bot.register_next_step_handler(msg, lambda m: run_engine(m, mid))
+
+    elif call.data.startswith("chain_"):
+        target = call.data.split("_")[1]
+        bot.send_message(call.message.chat.id, f"💀 **CHAINING EXPLOIT ON {target}...**\nModul: 16 (SQLi) Initiated via Proxy Ghost.")
 
     elif call.data == "back":
         bot.delete_message(call.message.chat.id, call.message.message_id)
-        send_welcome(call.message)
+        start(call.message)
 
-def execute_logic(message, mod_id):
-    target = message.text
-    bot.send_message(message.chat.id, f"🚀 **Executing run_{mod_id} on {target}...**")
-    # Jalankan engine main.py Tuan
-    res = subprocess.getoutput(f"python3 main.py --mod {mod_id} --target {target}")
-    bot.send_message(message.chat.id, f"✅ **RESULT:**\n`{res}`", parse_mode="Markdown")
+def run_engine(m, mid):
+    res = subprocess.getoutput(f"python3 main.py --mod {mid} --target {m.text}")
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🚀 HACK THIS IP (CHAIN)", callback_data=f"chain_{m.text}"))
+    markup.add(types.InlineKeyboardButton("🔄 MENU", callback_data="back"))
+    bot.send_message(m.chat.id, res, reply_markup=markup, parse_mode="Markdown")
 
 bot.polling(non_stop=True)

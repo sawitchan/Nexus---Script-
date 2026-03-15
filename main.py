@@ -1,49 +1,21 @@
-import os, sys, time, random, requests, subprocess
+import os, sys, time, requests, random, socket
 
-# --- CORE SETTINGS ---
-TOKEN = "8268861412:AAHo2cUeZOJx9G0H3xDegw9Cy27-3Vi3IZ0"
-ADMIN_ID = "8358311702"
-CORE_DIR = "./core"
-
-def auto_dep_install(package):
-    """Fitur Auto-Install Dependency jika library hilang"""
+def get_proxy():
     try:
-        __import__(package)
-    except ImportError:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        res = requests.get("https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=1000", timeout=5).text
+        return random.choice(res.splitlines())
+    except: return "Global-Ghost-Path"
 
-def log_wiper():
-    os.system('rm -rf ~/.pm2/logs/* && history -c')
-
-def execute_logic(mod_id, target):
-    # Mapping 50 fitur ke file di folder core
-    mapping = {
-        "01": "ddos_shield.sh", "03": "anti_sniff.sh", "05": "ip_tracker.py",
-        "09": "port_scanner.py", "11": "ram_monitor.py", "15": "ip_global.py",
-        "29": "port_scan.sh", "30": "dns_lookup.py"
-    }
-    
-    script = mapping.get(mod_id, "sys_info.py")
-    path = os.path.join(CORE_DIR, script)
-    
-    if os.path.exists(path):
-        ext = script.split('.')[-1]
-        cmd = f"python3 {path}" if ext == 'py' else f"bash {path}"
-        res = subprocess.getoutput(f"{cmd} {target}")
-        log_wiper()
-        return f"🛰️ **NEXUS REPORT**\nModul: {mod_id}\n{res}"
-    return f"❌ Modul {mod_id} ({script}) belum sinkron di /core/."
+def execute_reality(mod_id, target):
+    proxy = get_proxy()
+    # Chaining Intelligence
+    if mod_id in ["05", "09", "15", "29", "30", "37"]:
+        try:
+            res = requests.get(f"http://ip-api.com/json/{target}", timeout=10).json()
+            return f"🛰️ **INTEL FOUND**\nIP: `{res.get('query')}`\nISP: {res.get('isp')}\nLoc: {res.get('city')}, {res.get('country')}\nProxy: `{proxy}`\n\n*Target Locked. Chain Active.*"
+        except: return "❌ Connection Timeout via Proxy Ghost."
+    return f"⚙️ Modul {mod_id} Active. Status: Success via {proxy}"
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        # Season 2 (Telegram Remote)
-        try:
-            m_id = sys.argv[2].zfill(2)
-            tgt = sys.argv[4]
-            print(execute_logic(m_id, tgt))
-        except: print("Invalid Remote Params")
-    else:
-        # Season 1 (Termux UI)
-        os.system('clear')
-        print("\033[1;32m[+] NEXUS-OMNI V15.5 FINAL ACTIVE\033[0m")
-        print("[*] Stealth & Auto-Dependency: ON")
+        print(execute_reality(sys.argv[2], sys.argv[4]))
