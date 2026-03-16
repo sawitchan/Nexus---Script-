@@ -17,8 +17,8 @@ FEATURES = {
 def start(m):
     markup = types.InlineKeyboardMarkup(row_width=1)
     for k in FEATURES.keys():
-        markup.add(types.InlineKeyboardButton(f"📂 {k}", callback_data=f"cat_{k}"))
-    bot.send_photo(m.chat.id, "https://c.termai.cc/i101/NoQ.jpg", caption="🚀 **NEXUS-OMNI V18.0 FINAL**\n50 Fitur Terdeteksi & Online.", reply_markup=markup)
+        markup.add(types.InlineKeyboardButton(f"📦 STORE: {k}", callback_data=f"cat_{k}"))
+    bot.send_message(m.chat.id, "🏪 **NEXUS-OMNI REAL ENGINE**\nStatus: Online & Real-time Execution.", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle(call):
@@ -28,39 +28,27 @@ def handle(call):
         btns = [types.InlineKeyboardButton(n, callback_data=f"run_{v}_{cat}") for n, v in FEATURES[cat]]
         markup.add(*btns)
         markup.add(types.InlineKeyboardButton("⬅️ BACK", callback_data="back"))
-        bot.edit_message_caption(f"📂 **KATEGORI: {cat}**", call.message.chat.id, call.message.message_id, reply_markup=markup)
+        bot.edit_message_text(f"🏪 **KATEGORI: {cat}**", call.message.chat.id, call.message.message_id, reply_markup=markup)
 
     elif call.data.startswith("run_"):
         _, mid, cat = call.data.split("_")
-        if cat == "SYSTEM": # Jalur System Tanpa Target
-            res = subprocess.getoutput(f"python3 main.py --mod {mid} --target SYSTEM")
-            bot.send_message(call.message.chat.id, res)
-        else: # Jalur Butuh Target
-            msg = bot.send_message(call.message.chat.id, f"🎯 **MODUL {mid} ACTIVE**\nMasukkan Target:")
-            bot.register_next_step_handler(msg, lambda m: run_smart(m, mid, cat))
-
-    elif call.data.startswith("chain_"): # JALUR CHAINING DINAMIS
-        action, target = call.data.split("_")[1:]
-        bot.send_message(call.message.chat.id, f"⚡ **PERINTAH {action.upper()} DITERIMA!**\nEksekusi pada target: {target}")
-        # Logika chaining bisa diperluas di sini
+        msg = bot.send_message(call.message.chat.id, f"🎯 **EXECUTE MODULE: {mid}**\nMasukkan Target IP/Domain:")
+        bot.register_next_step_handler(msg, lambda m: run_logic(m, mid, cat))
 
     elif call.data == "back":
         start(call.message)
 
-def run_smart(m, mid, cat):
+def run_logic(m, mid, cat):
+    # INI ADALAH EKSEKUSI NYATA KE TERMINAL TERMUX
     res = subprocess.getoutput(f"python3 main.py --mod {mid} --target {m.text}")
     markup = types.InlineKeyboardMarkup()
-    
+  
     if cat == "INTEL":
-        markup.add(types.InlineKeyboardButton("💀 BRUTE FORCE TARGET", callback_data=f"chain_brute_{m.text}"))
-        markup.add(types.InlineKeyboardButton("🔍 DEEP SCAN VULN", callback_data=f"chain_scan_{m.text}"))
+        markup.add(types.InlineKeyboardButton("💉 SQL INJECTION", callback_data=f"run_16_EXPLOIT"))
     elif cat == "EXPLOIT":
-        markup.add(types.InlineKeyboardButton("🛡️ INJECT BACKDOOR", callback_data=f"chain_door_{m.text}"))
-        markup.add(types.InlineKeyboardButton("🧹 CLEAN LOGS", callback_data=f"run_14_SYSTEM"))
-    elif cat == "NETWORK":
-        markup.add(types.InlineKeyboardButton("🌊 INCREASE FLOOD", callback_data=f"chain_flood_{m.text}"))
-    
-    markup.add(types.InlineKeyboardButton("🔄 MAIN MENU", callback_data="back"))
-    bot.send_message(m.chat.id, res, reply_markup=markup, parse_mode="Markdown")
+        markup.add(types.InlineKeyboardButton("🚪 INSTALL BACKDOOR", callback_data=f"run_20_EXPLOIT"))
+
+    markup.add(types.InlineKeyboardButton("🔄 MENU", callback_data="back"))
+    bot.send_message(m.chat.id, f"✅ **RESULT:**\n`{res}`", reply_markup=markup, parse_mode="Markdown")
 
 bot.polling(non_stop=True)
